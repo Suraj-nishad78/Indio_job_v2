@@ -1,0 +1,98 @@
+
+<header id="job-details-header">
+        <div id="job-full-details">
+            <div id="job-image">
+                <img src="https://files.codingninjas.com/web-banner-28759.png">
+            </div>
+            <div id="job-title-location-company">
+                <ul>
+                    <li><%= job.jobDesignation %></li>
+                    <li>oppertunity in <%= job.jobLocation %> at</li>
+                    <li><%= job.companyName %></li>
+                </ul>
+            </div>
+            <% if(user.email === String(job.jobCreater)) { %>
+                <div id="job-update-delete-btn">
+                    <span>Actively hiring  <i class="fa-solid fa-chart-line"></i></span>
+                    <a id="job-edit" href="#" onclick="editJob('<%= JSON.stringify(job) %>')"><i class="fa-regular fa-pen-to-square"></i></a>
+                    <a id="job-delete" href="#"  onclick="deletedjob('<%= job.id %>')"><i class="fa-regular fa-trash-can"></i></a>
+                </div>
+            <% } %>
+            <div id="job-detail-title">
+                <p><u><%= job.companyName %></u></p>
+            </div>
+            <div id="job-post">
+                <p><%= job.jobCategory %></p>
+                <span><%= job.jobDesignation %></span>
+            </div>
+            <div id="job-detail-location">
+                <i class="fa-solid fa-location-dot"></i>
+                <span><%= job.jobLocation %></span>
+            </div>
+            <div id="job-detail-salary">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+                <span><%= job.salary %></span>
+            </div>
+            <div id="job-apply-date">
+                <i class="fa-regular fa-hourglass"></i>
+                <span>Apply By <%= job.applyBy %></span>
+            </div>
+            <div id="job-openings">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span>Number of openings <%= job.numberOfOpenings %></span>
+            </div>
+            <div id="job-applicants">
+                <i class="fa-solid fa-user"></i>
+                <a href="/jobs/<%= job.id %>/applicants">Applicants <%= job.applicants.length %></a>
+            </div>
+            <div id="job-detail-skills">
+                <ul>
+                    <% job.skillsRequired.forEach(skills=>{ %>
+                        <li><%= skills %></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <div id="job-apply">
+                <% if(user){ %>
+                    <button id="apply-form" disabled>Apply Now</button>
+                <% } else { %>
+                    <button id="apply-form" onclick="applyForm('<%= app %>')">Apply Now</button>
+                <% } %>
+            </div>
+            <div id="job-posted-date">
+                <p>Posted: <%= job.jobPosted %></p>
+            </div>
+        </div>
+</header>   
+<div id="apply-form-data" class="hidden">
+    <div id="apply-form-title">
+        <p>Indio Jobs!</p>
+        <a class="close-apply-form" href="#">X</a>
+    </div>
+    <hr>
+    <div id="apply-form-input" >
+        <p>apply in less than 1 minute</p>
+        <form action="/jobs/<%= job.id %>/applicants/<%= app.id %>" method="post" enctype="multipart/form-data">
+            <div id="apply-inputs">
+                <label for="apply-name">Name</label>
+                <input id="apply-name" type="name" name="name" placeholder="Enter your name" required style="width: 13em;">
+                <br>
+                <label for="apply-email">Email</label>
+                <input id="apply-email" type="email" name="email" placeholder="Enter your email" required style="width: 13em;">
+                <br>
+                <label for="apply-number">Contact</label>
+                <input id="apply-number" type="number" name="number" placeholder="Enter your Number" required style="width: 12em;">
+            </div>
+            <div id="apply-resume">
+                <label>Resume</label>
+                <input type="file" name="resume" required style="width: 12em;">
+            </div>
+            <button type="submit" onclick="applyFormAppId('<%= app.id %>', '<%= job.id %>')">Submit</button>
+        </form>
+    </div>
+    <hr>
+    <div id="Close-changes-form">
+        <button class="close-apply-form">Close</button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

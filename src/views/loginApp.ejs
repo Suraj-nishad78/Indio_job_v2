@@ -1,0 +1,18 @@
+<header id="log-in-header">
+    <div id="log-in-page">
+        <p>Applicant's Login</p>
+        <form action="/login/applicant" method="post">
+            <label for="log-in-email">Email</label>
+            <input id="log-in-email" type="email" name="email" placeholder="Enter your email" required style="width: 21em;">
+            <br>
+            <label for="log-in-password">Password</label>
+            <input id="log-in-password" type="password" name="password" placeholder="Enter your password" required autocomplete="off" style="width: 19.2em;">
+            <br>
+            <% if(err){ %>
+                <h4><%= err %></h4>
+            <% } %>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</header>
+

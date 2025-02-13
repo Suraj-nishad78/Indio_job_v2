@@ -1,0 +1,67 @@
+<style>
+    body{
+        background-color: #181743;
+    }
+
+    .hide{
+        /* background-color: red; */
+        visibility: hidden;
+    }
+</style>
+
+
+<header id="jobs-page">
+    <div id="jobs-list">
+        <% jobs.forEach(job =>{ %>
+            <div class="jobs-details">
+                <div class="job-title">
+                    <p>Actively hiring  <i class="fa-solid fa-chart-line"></i></p>
+                    <h3><%= job.companyName %></h3>
+                </div>
+                <div class="job-role">
+                    <h4><%= job.jobCategory %></h4>
+                    <span><%= job.jobDesignation %></span>
+                </div>
+                <div class="location">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span><%= job.jobLocation %></span>
+                </div>
+                <div class="job-salary">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                    <span><%= job.salary %></span>
+                </div>
+                <div class="job-skills">
+                    <ul>
+                        <% job.skillsRequired.forEach(skills =>{ %>
+                            <li><%= skills %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+                <div class="job-more-details">
+                    <a href="/job/<%= job.id %>">View details</a>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</header>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const lastLoggedIn = '<%= lastLoggedIn %>';
+    const alertShownKey = 'lastLoginAlertShown';
+
+    if (lastLoggedIn) {
+        // Check if the current `lastLoggedIn` value has already been alerted
+        if (localStorage.getItem(alertShownKey) !== lastLoggedIn) {
+            alert(`Welcome back! you had last logged in at ${lastLoggedIn}`);
+            localStorage.setItem(alertShownKey, lastLoggedIn); // Store the current `lastLoggedIn` value
+        }
+    } else {
+        // If `lastLoggedIn` is empty or undefined, clear the stored key
+        localStorage.removeItem(alertShownKey);
+    }
+});
+
+
+</script>

@@ -1,0 +1,72 @@
+
+<header id="applicants-header">
+    <div id="applicants-container">
+        <div id="applicants-heading">
+            <ul>
+                <li>#</li>
+                <li>Name</li>
+                <li>Email</li>
+                <li>Contact</li>
+                <li>Resume</li>
+                <% if(app) { %>
+                    <li>Applied For</li>
+                    <li>Update Btn</li>
+                <% } %>
+            </ul>
+        </div>
+        <div id="applicants">
+            <!--------------->
+            <% applicants.forEach(applicant=>{ %>
+                <div class="applicants-details">
+                    <ul>
+                        <li><%= count++ %></li>
+                        <li><%= applicant.name %></li>
+                        <li><%= applicant.email %></li>
+                        <li><%= applicant.number %></li>
+                        <li><a href="<%= applicant.resume %>" target="_blank">View</a></li>
+                        <% if(app) { %>
+                            <li><%= applicant.companyName %></li>
+                            <li>
+                                <a class="app-edit" href="#" onclick="editAppliedJob('<%= JSON.stringify(applicant) %>', '<%= applicant.appId %>', '<%= editIndex++ %>')"><i class="fa-regular fa-pen-to-square"></i></a>
+                                <a id="app-delete" href="#" onclick="deleteAppliedjob('<%= applicant.appId %>', '<%= applicant.jobId %>', '<%= deleteIndex++ %>')"><i class="fa-regular fa-trash-can"></i></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <!--------- Update form  ---------->
+    <div id="update-form-data" class="hidden">
+        <div id="update-form-title">
+            <p>Indio Jobs!</p>
+            <a class="close-update-form" href="#">X</a>
+        </div>
+        <hr>
+        <div id="update-form-input" >
+            <p>Applicant update form</p>
+            <form id="update-data" enctype="multipart/form-data">
+                <div id="update-inputs">
+                    <label for="update-name">Name</label>
+                    <input id="update-name" type="name" name="name" placeholder="Enter your name" required style="width: 13.1em;">
+                    <br>
+                    <label for="update-email">Email</label>
+                    <input id="update-email" type="email" name="email" placeholder="Enter your email" required style="width: 13.1em;">
+                    <br>
+                    <label for="update-number">Contact</label>
+                    <input id="update-number" type="number" name="number" placeholder="Enter your Number" required style="width: 12em;">
+                </div>
+                <div id="update-resume">
+                    <label>Resume</label>
+                    <input type="file" name="resume" required style="width: 12em;">
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+        <hr>
+        <div id="Close-update-form">
+            <button class="close-update-form">Close</button>
+        </div>
+    </div>
+</header>
