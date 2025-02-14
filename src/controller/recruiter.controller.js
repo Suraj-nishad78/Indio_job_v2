@@ -1,10 +1,13 @@
 
+// modules imports are here
+
+import bcrypt from "bcrypt"
+
 // Neccessary imports are here
 
 import {
     createRecruiterModel,
     findRecruiterModel,
-    userEmailExist,
     recruitersFunc
 } from '../model/recruiter.model.js'
 
@@ -18,19 +21,29 @@ import {
 
 // Neccessary funcion are here
 
-const recruitersArrayRoute = (req, res) =>{
-    const recrui = recruitersFunc()
-    res.send(recrui)
+const recruitersArrayRoute = async (req, res) =>{
+    const recruiter = await recruitersFunc()
+    res.send(recruiter)
 }
 
-const createRecruiter = (req, res) =>{
-    const emailExist = userEmailExist(req.body)
-    if(emailExist && emailExist.length){ 
+const createRecruiter = async (req, res) =>{
+    try{
+        const {name , email, password} = req.body;
+        const emailExist =  await findRecruiterModel(email)
+        if(emailExist){ 
+            res.redirect("/home")
+            return
+        }
+
+        const encryptedPassword = await bcrypt.hash(password, 10)
+        const user = {name , email, password:encryptedPassword}
+        
+        const recruiter = await createRecruiterModel(user)
+        
+        res.redirect("/login")
+    } catch(err){
         res.redirect("/home")
-        return
     }
-    createRecruiterModel(req.body)
-    res.redirect("/login")
 }
 
 const loginPage = (req, res)=>{
@@ -40,16 +53,22 @@ const loginPage = (req, res)=>{
     res.render("login", {user, app, err})
 }
 
-const loginRecruiter = (req, res) =>{
-    let user = req.session.user || '';
-    let app = req.session.App || '';
-    const recruiter = findRecruiterModel(req.body)
-    if(recruiter && recruiter.length){
-        req.session.user = recruiter[0];
-        res.redirect("/jobs")
-    }else{
-        let err = 'Authentication failed invalid credential !'
-        res.render('login', {user, app, err })
+const loginRecruiter = async (req, res) =>{
+    try{
+        let user = req.session.user || '';
+        let app = req.session.App || '';
+        const {email, password} = req.body;
+        const recruiter = await findRecruiterModel(email)
+        const checkPassword = await bcrypt.compare(password, recruiter.password)
+        if(recruiter && checkPassword){
+            req.session.user = recruiter;
+            res.redirect("/jobs")
+        }else{
+            let err = 'Authentication failed invalid credential !'
+            res.render('login', {user, app, err })
+        }
+    } catch(err){
+        res.redirect("/home")
     }
 }
 

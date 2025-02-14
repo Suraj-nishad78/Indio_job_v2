@@ -168,7 +168,7 @@ function editJob(job) {
     sessionStorage.setItem('jobData', JSON.stringify(jobJSON));
 
     // Redirect to the new page
-    window.location.href = `/update-job-page/${jobJSON.id}`;
+    window.location.href = `/update-job-page/${jobJSON._id}`;
 }
 
 // On the redirected page, retrieve the data and populate fields
@@ -413,27 +413,26 @@ async function getRecruiterData () {
 
 getRecruiterData()
 
-function recruiterSignup(){
-
+// function recruiterSignup(){
     
-    const recruiterName = document.getElementById('recruiter-name').value;
-    const recruiterEmail = document.getElementById('recruiter-email').value;
-    const recruiterPassword = document.getElementById('recruiter-password').value;
+//     const recruiterName = document.getElementById('recruiter-name').value;
+//     const recruiterEmail = document.getElementById('recruiter-email').value;
+//     const recruiterPassword = document.getElementById('recruiter-password').value;
 
-    const findRecruiter = recruiterData.filter(recruiter=>recruiter.email == recruiterEmail);
+//     const findRecruiter = recruiterData.find(recruiter=>recruiter.email == recruiterEmail);
 
 
-    if(findRecruiter && findRecruiter.length){
-        alert(`The email address is already registered. Please sign up with a different email`)
-        return
-    }
+//     if(findRecruiter){
+//         alert(`The email address is already registered. Please sign up with a different email`)
+//         return
+//     }
 
-    if(recruiterName.trim() && recruiterEmail.trim() && recruiterPassword.trim()){
-        alert('Congratulations! You have successfully signed up as a Recruiter.')
-        return
-    }
+//     if(recruiterName.trim() && recruiterEmail.trim() && recruiterPassword.trim()){
+//         alert('Congratulations! You have successfully signed up as a Recruiter.')
+//         return
+//     }
 
-}
+// }
 
 
 let applicantsData;

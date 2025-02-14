@@ -1,11 +1,11 @@
 import express from "express"
 import expressEjsLayout from "express-ejs-layouts"
 import session from "express-session"
-import dotenv from "dotenv"
 import {join} from "path"
 import ejs from "ejs"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
+import dotenv from "dotenv"
 dotenv.config()
 
 /*----import function are here-----*/
@@ -86,7 +86,7 @@ app.get("/", (req, res)=>{
 app.get("/home", auth, jobsHome)
 app.get("/jobs", jobListingPage)
 app.get("/job/:id", jobDetails)
-app.get("/post-job", auth, newJobPage)
+app.get("/post-job", newJobPage)
 app.get("/update-job-page/:id", auth, updateJobPage)
 app.get('/jobs/applicants', auth, jobApplicants)
 app.post("/post-job", createNewJob)

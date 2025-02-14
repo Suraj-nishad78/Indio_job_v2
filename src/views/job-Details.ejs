@@ -11,11 +11,11 @@
                     <li><%= job.companyName %></li>
                 </ul>
             </div>
-            <% if(user.email === String(job.jobCreater)) { %>
+            <% if(user._id === String(job.jobCreater)) { %>
                 <div id="job-update-delete-btn">
                     <span>Actively hiring  <i class="fa-solid fa-chart-line"></i></span>
                     <a id="job-edit" href="#" onclick="editJob('<%= JSON.stringify(job) %>')"><i class="fa-regular fa-pen-to-square"></i></a>
-                    <a id="job-delete" href="#"  onclick="deletedjob('<%= job.id %>')"><i class="fa-regular fa-trash-can"></i></a>
+                    <a id="job-delete" href="#"  onclick="deletedjob('<%= job._id %>')"><i class="fa-regular fa-trash-can"></i></a>
                 </div>
             <% } %>
             <div id="job-detail-title">
@@ -43,7 +43,7 @@
             </div>
             <div id="job-applicants">
                 <i class="fa-solid fa-user"></i>
-                <a href="/jobs/<%= job.id %>/applicants">Applicants <%= job.applicants.length %></a>
+                <a href="/jobs/<%= job._id %>/applicants">Applicants <%= job.applicants.length %></a>
             </div>
             <div id="job-detail-skills">
                 <ul>
@@ -72,7 +72,7 @@
     <hr>
     <div id="apply-form-input" >
         <p>apply in less than 1 minute</p>
-        <form action="/jobs/<%= job.id %>/applicants/<%= app.id %>" method="post" enctype="multipart/form-data">
+        <form action="/jobs/<%= job._id %>/applicants/<%= app._id %>" method="post" enctype="multipart/form-data">
             <div id="apply-inputs">
                 <label for="apply-name">Name</label>
                 <input id="apply-name" type="name" name="name" placeholder="Enter your name" required style="width: 13em;">
@@ -87,7 +87,7 @@
                 <label>Resume</label>
                 <input type="file" name="resume" required style="width: 12em;">
             </div>
-            <button type="submit" onclick="applyFormAppId('<%= app.id %>', '<%= job.id %>')">Submit</button>
+            <button type="submit" onclick="applyFormAppId('<%= app._id %>', '<%= job._id %>')">Submit</button>
         </form>
     </div>
     <hr>

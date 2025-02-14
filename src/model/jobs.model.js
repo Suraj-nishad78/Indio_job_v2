@@ -1,60 +1,11 @@
 
-import { 
-    applicantsFunc,
-    updatedApplicantsArray
-    } from './applicants.model.js';
+import JobModel from "../schema/job.schema.js"
 
-let jobId = 4
-let jobsArray = [
-    {
-        id: 1,
-        jobCreater:"surajn838@gmail.com",
-        jobCategory: "Tech",
-        jobDesignation: "SDE",
-        jobLocation: "Gurgaon HR IND Remote",
-        companyName: "Coding Ninjas",
-        salary:"15-20 Lpa",
-        applyBy: "30 Nov 2024",
-        skillsRequired: ["React", "NodeJs", "JS", "SQL", "MongoDB", "Express", "AWS"],
-        numberOfOpenings: "5",
-        jobPosted: "12/7/2024, 08:31:31 AM",
-        applicants:[]
-    },
-    {
-        id: 2,
-        jobCreater:"vivek123@gmail.com",
-        jobCategory: "Tech",
-        jobDesignation: "DevOps",
-        jobLocation: "Delhi IND",
-        companyName: "Google",
-        salary:"10-15 Lpa",
-        applyBy: "15 Sep 2024",
-        skillsRequired: ["React", "NodeJs", "MongoDB", "Express", "AWS"],
-        numberOfOpenings: "10",
-        jobPosted: "28/8/2024, 10:15:2 PM",
-        applicants:[]
-    },
-    {
-        id: 3,
-        jobCreater:"surajn838@gmail.com",
-        jobCategory: "Tech",
-        jobDesignation: "Full-Stack Developer",
-        jobLocation: "Chennai India",
-        companyName: "CapgaMini",
-        salary:"5-10 Lpa",
-        applyBy: "31 Dec 2024",
-        skillsRequired: ["React", "SQL", "MongoDB", "Express", "AWS"],
-        numberOfOpenings: "7",
-        jobPosted: "21/9/2024, 11:10:55 AM",
-        applicants:[]
-    }
-]
-
-const jobsArrayFunc = () =>{
-    return jobsArray;
+const jobsArrayFunc = async () =>{
+    return await JobModel.find().lean();
 }
 
-const createJob = (job, creater) => {
+const createJob = async (job, creater) => {
     const {
         jobCategory,
         jobDesignation,
@@ -74,7 +25,6 @@ const createJob = (job, creater) => {
     const jobPosted = PostedDateNTime()
 
     const newJob = {
-        id:jobId,
         jobCreater:creater,
         jobCategory,
         jobDesignation,
@@ -87,10 +37,7 @@ const createJob = (job, creater) => {
         jobPosted,
         applicants:[]
     }
-
-    const jobArray = jobsArrayFunc()
-    jobArray.push(newJob)
-    jobId++
+    return await JobModel.create(newJob)
 }
 
 function dateFormat(appliedDate){
@@ -123,17 +70,12 @@ function PostedDateNTime(){
     return jobPosted;
 }
 
-
-const getJobFromId = (jobId) =>{
-    const{ id } = jobId;
-    const allJobs = jobsArrayFunc();
-    const getJob = allJobs.filter(job =>job.id == id);
-    const job = getJob[0];
-    return job;
+const getJobFromId = async (_id) =>{
+    return await JobModel.findOne({_id})
 }
 
-const updateJobWithId = (jobId, jobData) =>{
-    
+const updateJobWithId = async(jobId, jobData) =>{
+    const _id = jobId;
     const {
         jobCategory,
         jobDesignation,
@@ -163,34 +105,23 @@ const updateJobWithId = (jobId, jobData) =>{
         applyBy
     }
 
-    jobsArray = jobsArray.map(job=>{
-        if(job.id === jobId){
-            return {...job,...updatedJobData}
-        } 
-            
-        return job
-    })
-
-    return jobsArray;
+    return await JobModel.findByIdAndUpdate(
+        _id,
+        { $set: updatedJobData },
+        { new: true, runValidators: true }
+    );
 
 }
 
-const deletejobWithId = (jobId) => {
-    const id = Number(jobId);
-    jobsArray = jobsArray.filter(job=>job.id !== id)
-    const updatedApplicants = applicantsFunc().map(app=>({
-        ...app,
-        appliedJob:app.appliedJob.filter(job=>job.jobId !== id)
-    }))
-
-    updatedApplicantsArray(updatedApplicants)
-
-    return jobsArray;
+const deletejobWithId = async (jobId) => {
+    const _id = jobId;
+    return await JobModel.findByIdAndDelete(_id)
 }
 
-const findJobText = (search) =>{
-    let searched = search.toLowerCase()
-    const job = jobsArray.filter(job=>job.companyName.toLowerCase().includes(searched));
+const findJobText = async (search) =>{
+    let query = {}
+    query.companyName = { $regex: search, $options: "i" };
+    const job = await JobModel.find(query)
     return job;
 }
 
@@ -200,6 +131,5 @@ export {
     updateJobWithId,
     deletejobWithId,
     findJobText,
-
     jobsArrayFunc
 }

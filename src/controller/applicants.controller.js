@@ -8,7 +8,6 @@ import {
     checkApplicantsExist,
     createApplicants,
     updateApplied,
-    checkEmailExist,
     deleteApplied,
     appIdAlreadyExist
 } from "../model/applicants.model.js"
@@ -27,16 +26,20 @@ const loginApplicants = (req, res)=>{
     res.render("loginApp", {user, app, err})
 }
 
-const applicantsAccount = (req, res)=>{
-    const {name, email, password} = req.body;
-    const emailExist = checkEmailExist(req.body)
-    if(emailExist && emailExist.length){
+const applicantsAccount = async (req, res)=>{
+    try{
+        const {name, email, password} = req.body;
+        const emailExist = await checkApplicantsExist(req.body)
+        if(emailExist && emailExist.length){
+            res.redirect("/home")
+            return
+        }
+        const app = {name, email, password}
+        const applicants = await addApplicantsInArray(app)
+        res.redirect('/login/applicants')
+    } catch(err){
         res.redirect("/home")
-        return
     }
-    const app = {name, email, password, appliedJob:[]}
-    const applicants = addApplicantsInArray(app)
-    res.redirect('/login/applicants')
 }
 
 const getApplicantAccount = (req, res)=>{
@@ -65,7 +68,6 @@ const logoutApplicant = (req, res)=>{
         }
       });
 }
-
 
 const jobApplyApplicants = (req, res) =>{
     const {name, email, number} = req.body;

@@ -3,22 +3,33 @@ import {
     jobsArrayFunc,
 } from "./jobs.model.js"
 
+import ApplicantModel from "../schema/applicants.schema.js"
+
 
 /*----------Applicants Array---------*/
 let applicantsId = 1
 let applicants = []
 
-const applicantsFunc = () =>{
-    return applicants;
+const applicantsFunc = async () =>{
+    return await ApplicantModel.find().lean();
 }
 
+const addApplicantsInArray = async (app) =>{
+    await ApplicantModel.create(app)
+}
+/*
 const addApplicantsInArray = (app) =>{
     const appId = applicantsId;
     const applicant = {id:appId,...app}
     applicantsId++
     return applicants.push(applicant)   
 }
+*/
 
+const checkApplicantsExist = async (email) =>{
+    return await ApplicantModel.findOne({email})
+}
+/*
 const checkApplicantsExist = (app) =>{
     const { email, password} = app;
     const findApp = applicants.filter(applicant=>applicant.email == email && applicant.password == password);
@@ -30,7 +41,7 @@ const checkEmailExist = (app) =>{
     const findApp = applicants.filter(applicant=>applicant.email == email);
     return findApp;
 }
-
+*/
 
 const createApplicants = (app, jobCreaterId, applicantsId) =>{
     const appId = Number(applicantsId);
@@ -122,7 +133,6 @@ export {
     deleteApplied,
     applicantsFormData,
     applicantsFunc,
-    checkEmailExist,
     updatedApplicantsArray,
     appIdAlreadyExist
 }
