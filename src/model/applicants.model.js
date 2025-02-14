@@ -1,14 +1,13 @@
 
 import {
     jobsArrayFunc,
+    getJobFromId,
+    updateApplicants,
+    deleteApplicants
 } from "./jobs.model.js"
 
 import ApplicantModel from "../schema/applicants.schema.js"
 
-
-/*----------Applicants Array---------*/
-let applicantsId = 1
-let applicants = []
 
 const applicantsFunc = async () =>{
     return await ApplicantModel.find().lean();
@@ -17,113 +16,80 @@ const applicantsFunc = async () =>{
 const addApplicantsInArray = async (app) =>{
     await ApplicantModel.create(app)
 }
-/*
-const addApplicantsInArray = (app) =>{
-    const appId = applicantsId;
-    const applicant = {id:appId,...app}
-    applicantsId++
-    return applicants.push(applicant)   
-}
-*/
 
 const checkApplicantsExist = async (email) =>{
     return await ApplicantModel.findOne({email})
 }
-/*
-const checkApplicantsExist = (app) =>{
-    const { email, password} = app;
-    const findApp = applicants.filter(applicant=>applicant.email == email && applicant.password == password);
-    return findApp;
-}
 
-const checkEmailExist = (app) =>{
-    const { email } = app;
-    const findApp = applicants.filter(applicant=>applicant.email == email);
-    return findApp;
-}
-*/
+const createApplicants = async (app, jobCreaterId, applicantsId) =>{
+    const _id = applicantsId;
+    const jobId = jobCreaterId;
 
-const createApplicants = (app, jobCreaterId, applicantsId) =>{
-    const appId = Number(applicantsId);
-    const jobId = Number(jobCreaterId);
-
-    const allJobs = jobsArrayFunc();
-    const getJob = allJobs.filter(job =>job.id == jobId);
-    const job = getJob[0];
+    const job = await getJobFromId(jobId);
     const companyName = job.companyName;
-    job.applicants.push({appId:appId})
-
-    const appDetail = applicants.find(applicant=>applicant.id === appId)
-    appDetail.appliedJob.push({appId, jobId, companyName,...app})
-
+    await updateApplicants(jobId, _id)
+    
+    const jobDetail = {appId:_id, jobId, companyName,...app}
+    const jobApplied = await ApplicantModel.findByIdAndUpdate(_id, {$addToSet: {appliedJob: jobDetail}})
+    return jobApplied;
 }
 
-const appIdAlreadyExist = (jobId, appId) =>{
-    const getJob = jobsArrayFunc().filter(job =>job.id == jobId);
-    const jobApp = getJob[0].applicants;
-    const appIdExist = jobApp.filter(job=>job.appId == appId)
+const appIdAlreadyExist = async (jobId, appId) =>{
+    const getJob = await getJobFromId(jobId);
+    const jobApp = getJob.applicants;
+    const appIdExist = jobApp.find(job=>job.appId == appId)
     return appIdExist;
 }
 
-const applicantsFormData = (jobId) => {
-    const { id } = jobId;
-    const allJobs = jobsArrayFunc();
-    const jobApplicants = allJobs.find(job => job.id == id)?.applicants || [];
-    const allApplicants = applicantsFunc();
+const findApplicantById = async (_id) =>{
+    return await ApplicantModel.findById(_id)
+}
 
-    return jobApplicants.flatMap(jobApp => 
+const applicantsFormData = async (jobId) => {
+    const { id } = jobId;
+    const allJobs = await getJobFromId(id);
+    const jobApplicants = allJobs.applicants;
+    const allApplicants = await applicantsFunc();
+
+    const job = jobApplicants.flatMap(jobApp => 
         allApplicants
-            .filter(app => app.id === jobApp.appId)
+            .filter(app => String(app._id) == String(jobApp.appId))
             .flatMap(app => app.appliedJob.filter(applied => applied.jobId == id))
     );
+    
+   return job;
+
 };
 
-const deleteApplied = (jId, aId, index) =>{
-    const jobId = Number(jId);
-    const appId = Number(aId);
-    const appliedIndex = Number(index);
 
-    // Erase Applicant Id from job Array
-    let jobs = jobsArrayFunc();
-    const jobIndex = jobs.findIndex(job => job.id === jobId);
-    
-    if (jobIndex === -1) {
-        console.error("Job not found!");
-        return;
-    }
-    
-    jobs[jobIndex].applicants = jobs[jobIndex].applicants.filter(applicant => applicant.appId !== appId);    
-    
-    // Erase Applied job from Applicants Array
-    let applicantsArray = applicantsFunc();
-    const applicantIndex = applicantsArray.findIndex(applicant => applicant.id === appId);
-    
-    if (applicantIndex === -1) {
-        console.error('Applicant not found!');
-        return;
-    }
-    
-    const appliedJobs = applicantsArray[applicantIndex].appliedJob;
-    appliedJobs.splice(index, 1);
-}
+const updateApplied = async (updateAppData, appId, index) => {
+    const updateQuery = Object.keys(updateAppData).reduce((acc, key) => {
+        acc[`appliedJob.${index}.${key}`] = updateAppData[key]; // Use dot notation to update specific properties
+        return acc;
+    }, {});
 
-const updateApplied = (updateAppData, appId, index)=>{
+    const updateApplicant = await ApplicantModel.findByIdAndUpdate(
+        appId,
+        { $set: updateQuery },
+        { new: true } // Return updated document
+        );
+        
+        return updateApplicant;
+    };
+
+    const deleteApplied = async (jId, aId, index) => {
+        const jobId = jId;
+        const appId = aId;
+        const appliedIndex = Number(index);
     
-    const applicants = applicantsFunc();
+        await deleteApplicants(jobId, appId); // Remove from job's applied list
     
-    const applicant = applicants.find(app=>app.id === appId)
-
-    const jobToUpdate = applicant.appliedJob[index]
-
-    applicant.appliedJob[index] = {
-        ...jobToUpdate,
-        ...updateAppData
-    }
-}
-
-const updatedApplicantsArray = (app) =>{
-    return applicants = app
-}
+        const applicant = await ApplicantModel.findById(appId);
+    
+        // Remove the object from the array using JavaScript splice and save the document
+        applicant.appliedJob.splice(appliedIndex, 1);
+        await applicant.save();
+    };
 
 export {
     addApplicantsInArray,
@@ -133,6 +99,6 @@ export {
     deleteApplied,
     applicantsFormData,
     applicantsFunc,
-    updatedApplicantsArray,
-    appIdAlreadyExist
+    appIdAlreadyExist,
+    findApplicantById
 }

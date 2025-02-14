@@ -125,11 +125,21 @@ const findJobText = async (search) =>{
     return job;
 }
 
+const updateApplicants = async (_id, appId) =>{
+    await JobModel.findByIdAndUpdate(_id, { $addToSet: { applicants: {appId} } });
+}
+
+const deleteApplicants = async (_id, appId) =>{
+    await JobModel.findByIdAndUpdate(_id, {$pull: { applicants: {appId} }})
+}
+
 export {
     createJob,
     getJobFromId,
     updateJobWithId,
     deletejobWithId,
     findJobText,
-    jobsArrayFunc
+    jobsArrayFunc,
+    updateApplicants,
+    deleteApplicants
 }

@@ -112,7 +112,7 @@ app.get("/login", loginPage)
 app.post("/recruiter", lastLoggedInAt, createRecruiter)
 app.post("/login", lastLoggedInAt, loginRecruiter)
 app.get("/logout", logoutRecruiter)
-app.get('/jobs/:id/applicants', auth, applicantsForm)
+app.get('/jobs/:id/applicants', applicantsForm)
 
 /*------- Other Routes---------*/
 

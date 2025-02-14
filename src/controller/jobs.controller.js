@@ -10,6 +10,8 @@ import {
     
 } from '../model/jobs.model.js'
 
+import {AppliedDeleteByJob} from "./applicants.controller.js"
+
 /*---------App-Arrays, Jobs-Arrays, Recrui-Arrays--------*/
 
 const jobsHome = (req, res) =>{
@@ -104,6 +106,7 @@ const deleteJob = async (req, res) =>{
         const {id} = req.params;
         const deletedJob = await deletejobWithId(id)
         if(deletedJob){
+            await AppliedDeleteByJob(id)
             res.redirect('/jobs')
         }
     } catch(err){

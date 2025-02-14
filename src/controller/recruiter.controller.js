@@ -12,7 +12,8 @@ import {
 } from '../model/recruiter.model.js'
 
 import {
-    jobsArrayFunc    
+    jobsArrayFunc,
+    getJobFromId
 } from '../model/jobs.model.js'
 
 import {
@@ -82,15 +83,15 @@ const logoutRecruiter = (req, res)=>{
       });
 }
 
-const applicantsForm = (req, res) =>{
+const applicantsForm = async (req, res) =>{
+    try{
     let user = req.session.user || '';
     let app = req.session.App || '';
-    const {id} = req.params
-    const jobs = jobsArrayFunc().filter(job=>job.id == id)
-    const createrJob = jobs[0].jobCreater;
-    if(user.email == createrJob){
-        const applicants = applicantsFormData(req.params);
-    
+    const {id} = req.params;
+    const jobs = await getJobFromId(id)
+    const createrJob = jobs.jobCreater;
+    if(user._id == createrJob){
+        const applicants = await applicantsFormData(req.params);
         if(applicants && applicants.length){
             let count = 1;
             res.render("applicants", {user,app , applicants, count})
@@ -106,6 +107,10 @@ const applicantsForm = (req, res) =>{
         const warning = 'only recruiters is allowed to access this page, login as recruiter to continue'
         res.render("404page", {user, app, warning})
     }
+  } catch(err){
+    console.log("Error while displaying applied applicants: ", err);
+    res.redirect("/home")
+  }
 }
 
 const jobApplicants = (req, res)=>{

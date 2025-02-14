@@ -43,8 +43,10 @@ const JobSchema = mongoose.Schema({
         required:true
     },
     applicants:[{
-                type:mongoose.Schema.ObjectId,
-                ref:"Applicants"
+                appId:{
+                    type:mongoose.Schema.ObjectId,
+                    ref:"Applicants"
+                }
     }]
 })
 
