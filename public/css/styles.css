@@ -131,6 +131,7 @@ background-color: var(--light-bg-color);
     cursor: pointer;
 }
 
+
 /*---------- main-content ---------*/
 main{
     position: relative;
@@ -1086,24 +1087,3 @@ main{
 .applicants-details li:last-child {
     flex: 1.5;
 }
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

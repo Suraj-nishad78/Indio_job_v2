@@ -156,8 +156,8 @@ const deleteAppliedJob = (req, res) =>{
     }
 }
 
-const AppliedDeleteByJob = async (jobID) =>{
-    // await ApplicantModel.findBy
+const AppliedDeleteByJob = async (jobId) =>{
+    await ApplicantModel.updateMany({}, {$pull: {appliedJob: {jobId:jobId}}})
 }
 
 export {
