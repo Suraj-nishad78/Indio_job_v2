@@ -1,5 +1,5 @@
 
-import RecruiterModel from "../schema/recruiter.schema.js"
+import RecruiterModel from "./recruiter.schema.js"
 
 const recruitersFunc = async () =>{
     return await RecruiterModel.find().lean();

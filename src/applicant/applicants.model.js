@@ -1,12 +1,11 @@
 
 import {
-    jobsArrayFunc,
     getJobFromId,
     updateApplicants,
     deleteApplicants
-} from "./jobs.model.js"
+} from "../job/jobs.model.js"
 
-import ApplicantModel from "../schema/applicants.schema.js"
+import ApplicantModel from "./applicants.schema.js"
 
 
 const applicantsFunc = async () =>{

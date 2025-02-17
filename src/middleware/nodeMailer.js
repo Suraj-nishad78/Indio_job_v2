@@ -1,5 +1,5 @@
 import nodeMailer from "nodemailer"
-import { appIdAlreadyExist } from '../model/applicants.model.js'
+import { appIdAlreadyExist } from '../applicant/applicants.model.js'
 
 const sendApplicantMail = async (req, res, next) =>{
     const{jobId, appId} = req.params;

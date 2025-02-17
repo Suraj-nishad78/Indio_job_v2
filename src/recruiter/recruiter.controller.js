@@ -9,16 +9,15 @@ import {
     createRecruiterModel,
     findRecruiterModel,
     recruitersFunc
-} from '../model/recruiter.model.js'
+} from './recruiter.model.js'
 
 import {
-    jobsArrayFunc,
     getJobFromId
-} from '../model/jobs.model.js'
+} from '../job/jobs.model.js'
 
 import {
     applicantsFormData
-} from "../model/applicants.model.js"
+} from "../applicant/applicants.model.js"
 
 // Neccessary funcion are here
 

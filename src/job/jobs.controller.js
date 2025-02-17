@@ -7,10 +7,9 @@ import {
     deletejobWithId,
     findJobText,
     jobsArrayFunc
-    
-} from '../model/jobs.model.js'
+} from './jobs.model.js'
 
-import {AppliedDeleteByJob} from "./applicants.controller.js"
+import {AppliedDeleteByJob} from "../applicant/applicants.controller.js"
 
 /*---------App-Arrays, Jobs-Arrays, Recrui-Arrays--------*/
 

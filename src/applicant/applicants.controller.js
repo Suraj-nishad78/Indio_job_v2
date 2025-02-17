@@ -12,8 +12,9 @@ import {
     deleteApplied,
     appIdAlreadyExist,
     findApplicantById
-} from "../model/applicants.model.js"
-import ApplicantModel from "../schema/applicants.schema.js"
+} from "./applicants.model.js"
+
+import ApplicantModel from "./applicants.schema.js"
 
 //Neccessary function are here
 

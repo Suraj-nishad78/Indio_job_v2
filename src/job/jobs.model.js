@@ -1,5 +1,5 @@
 
-import JobModel from "../schema/job.schema.js"
+import JobModel from "./job.schema.js"
 
 const jobsArrayFunc = async () =>{
     return await JobModel.find().lean();
