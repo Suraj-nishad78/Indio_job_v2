@@ -61,7 +61,6 @@ The project is live!
 ## 📸 Screenshots
 ![alt text](./Web-image/image1.png)
 ![alt text](./Web-image/image2.png)
-![alt text](./Web-image/image3.png)
 
 ---
 
